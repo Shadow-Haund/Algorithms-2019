@@ -2,6 +2,9 @@
 
 package lesson1
 
+import java.io.File
+import java.io.IOException
+
 /**
  * Сортировка времён
  *
@@ -32,8 +35,41 @@ package lesson1
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
+//Сложность алгоритма O(n)
+//Память O(n)
+fun timeStrToSeconds(str: String): Int {
+    val parts = str.split(":")
+    var result = 0
+    result = if ("AM" in str)
+        if ("12" == str.substring(0..1))
+            parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
+        else
+            parts[0].toInt() * 3600 + parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
+    else
+        if ("12" == str.substring(0..1))
+            parts[0].toInt() * 3600 + parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
+        else
+            parts[0].toInt() * 3600 + 12 * 3600 + parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
+    return result
+}
+
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    val readList = File(inputName).bufferedReader().readLines()
+    val writeList = File(outputName).bufferedWriter()
+    val rezList = mutableListOf<Pair<String, Int>>()
+    for (i in readList.indices) {
+        if (!readList[i].contains(Regex("""\s?\d{2}:\d{2}:\d{2}\s?[AMP]\s?""")))
+            throw IOException()
+    }
+    for (i in readList.indices) {
+        rezList.add(Pair(readList[i], timeStrToSeconds(readList[i])))
+
+    }
+    val s = rezList.sortedBy { it.second }
+    for (element in s) {
+        writeList.write(element.first + "\n")
+    }
+    writeList.close()
 }
 
 /**
@@ -66,6 +102,38 @@ fun sortAddresses(inputName: String, outputName: String) {
     TODO()
 }
 
+//{
+//    val readText = File(inputName).bufferedReader().readLines().sorted()
+//    val rezL = mutableListOf<Pair<String, String>>()
+//    val tryL = mutableListOf<String>()
+//    val writeText = File(outputName).bufferedWriter()
+//    var j = 1
+//    var g = 0
+//    for (i in readText.indices) {
+//        if (readText[i].matches(Regex("""([А-ЯЁA-Z][а-яёa-z]+-?([А-ЯЁA-Z][а-яёa-z]+)? ){2}- ([А-ЯЁA-Z][а-яёa-z]+-?([А-ЯЁA-Z][а-яёa-z]+)? )\d+"""))) {
+//            tryL.add(Pair(readText[i].split(" - ")[1], readText[i].split(" - ")[0]).toList().joinToString(", "))
+//        } else throw IOException("Строка не соответствует требуемой")
+//    }
+//    tryL.sortedDescending()
+//    for (i in tryL.indices)
+//        rezL.add(Pair(tryL[i].split(", ")[0], tryL[i].split(", ")[1]))
+//    while (j <= rezL.size - 1) {
+//        if (rezL[g].first == rezL[j].first) {
+//            rezL[g] = Pair(rezL[g].first, rezL[g].second + ", " + rezL[j].second)
+//            rezL.remove(rezL[j])
+//        } else {
+//            g = j
+//            j++
+//        }
+//    }
+//    for (i in 0 until rezL.size) {
+//        writeText.write(rezL[i].first + " - " + rezL[i].second + "\n")
+//    }
+//    writeText.close()
+//
+
+//}
+
 /**
  * Сортировка температур
  *
@@ -96,10 +164,36 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  */
+//Сложность алгоритма O(n)
+//Память O(n)
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
-}
+    val readFile = File(inputName).bufferedReader().readLines().toMutableList()
+    val outFile = File(outputName).bufferedWriter()
+    val sortedNums = mutableListOf<Double>()
 
+    for (i in readFile.indices) {
+        sortedNums.add(readFile[i].toDouble())
+    }
+    val rezFile = sortedNums.toMutableList().sorted().joinToString("\n")
+    outFile.write(rezFile)
+    outFile.close()
+}
+//File(outputName).writeText(File(inputName).bufferedReader().readLines().toDouble())
+/*
+val readFile = File(inputName).bufferedReader().readLines().toMutableList()
+    val minus = mutableListOf<Double>()
+    val plus = mutableListOf<Double>()
+
+    for (i in readFile.indices) {
+        if (readFile[i].contains('-'))
+            minus.add(readFile[i].toDouble())
+        else plus.add(readFile[i].toDouble())
+    }
+    plus.sortDescending()
+    minus.sortDescending()
+    val rezList = plus + minus
+    (rezList.forEachIndexed { i, _ -> File(outputName).writeText(rezList[i].toString()) })
+ */
 /**
  * Сортировка последовательности
  *
@@ -130,9 +224,20 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+TODO()
 }
+//    val readText = File(inputName).readBytes().toMutableList()
+//    val writeText = File(outputName).bufferedWriter()
+//    val sortBites = readText.sorted()
+//    var maxInner = Pair(0, 0)
+//    val ch = 0
+//    var globalMaxInner = 0
+//    for (i in sortBites.indices)
+//        maxInner = (Pair(i, 0))
 
+
+
+//    writeText.close()
 /**
  * Соединить два отсортированных массива в один
  *

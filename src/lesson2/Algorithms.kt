@@ -32,7 +32,8 @@ import kotlin.math.sqrt
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 
-
+//Сложность алгоритма O(n)
+//Память O(n)
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     val readF = File(inputName).bufferedReader().readLines()
     var maxCurSum = 0
@@ -144,18 +145,21 @@ val readF = File(inputName).bufferedReader().readLines()
  * но приветствуется попытка решить её самостоятельно.
  */
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
+    TODO()
+}
+/*
+
     val men = mutableListOf<Int>()
     var step = choiceInterval - 1
     for (i in 0..menNumber)
         men.add(i)
-//    for (i in menNumber..0)
-//        for (menNumber ) {
-//            men.remove(men[step])
-//            step = (step + choiceInterval) % men[i]
-//        }
+    for (i in menNumber..0)
+        for (menNumber ) {
+            men.remove(men[step])
+            step = (step + choiceInterval) % men[i]
+        }
     return men.sum()
-}
-/*
+
 if (menNumber == 1)
         /return 0
     return if (menNumber > 1) (josephTask(menNumber - 1, choiceInterval) + choiceInterval - 1) % menNumber + 1 else -1
@@ -175,6 +179,8 @@ if (menNumber == 1)
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  */
+//Сложность алгоритма O(n)
+//Память O(n)
 fun longestCommonSubstring(first: String, second: String): String {
     val rezL = List(first.length + 1) { IntArray(second.length + 1) }
     var max = 0
@@ -226,6 +232,8 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
  */
+//Сложность алгоритма O(n)
+//Память O(1)
 fun calcPrimesNumber(limit: Int): Int {
     var num = 0
     if (limit <= 1)
