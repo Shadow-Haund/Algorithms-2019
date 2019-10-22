@@ -3,6 +3,8 @@
 package lesson2
 
 import java.io.File
+import java.io.IOException
+import kotlin.IllegalArgumentException
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -35,9 +37,12 @@ import kotlin.math.sqrt
 //Сложность алгоритма O(n)
 //Память O(n)
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
+
     val readF = File(inputName).bufferedReader().readLines()
+    for (i in readF.indices)
+        require(readF[i].matches(Regex("""\d+""")))
     var maxCurSum = 0
-    var maxGlSum = maxGlobalSum(0, 0, 0)
+    var maxGlSum = MaxGlobalSum(0, 0, 0)
     var firstI = 0
     var secondI = 1
     val listOfPAndM = mutableListOf<Int>()
@@ -48,7 +53,7 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
         maxCurSum = max(listOfPAndM[i], maxCurSum + listOfPAndM[i])
 
         if (maxCurSum > maxGlSum.sum) {
-            maxGlSum = maxGlobalSum(maxCurSum, firstI, secondI)
+            maxGlSum = MaxGlobalSum(maxCurSum, firstI, secondI)
         }
         if (maxCurSum > 0) secondI++
         if (maxCurSum < 0) {
@@ -61,11 +66,7 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
     return Pair(maxGlSum.fInd + 1, maxGlSum.sInd + 1)
 }
 
-class maxGlobalSum(sum: Int, fInd: Int, sInd: Int) {
-    var sum = sum
-    var fInd = fInd
-    var sInd = sInd
-}
+class MaxGlobalSum(var sum: Int, var fInd: Int, var sInd: Int)
 /*
 for (i in readF.indices) {
         for (j in i + 1 until readF.size) {
@@ -179,7 +180,7 @@ if (menNumber == 1)
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  */
-//Сложность алгоритма O(n)
+//Сложность алгоритма O(n*m) где n - длина 1 строки и m длина 2 строки
 //Память O(n)
 fun longestCommonSubstring(first: String, second: String): String {
     val rezL = List(first.length + 1) { IntArray(second.length + 1) }
@@ -232,9 +233,11 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
  */
-//Сложность алгоритма O(n)
+//Сложность алгоритма O(sqrt(n))
 //Память O(1)
 fun calcPrimesNumber(limit: Int): Int {
+    if (limit == null)
+        throw IllegalArgumentException("Число не задано")
     var num = 0
     if (limit <= 1)
         return 0

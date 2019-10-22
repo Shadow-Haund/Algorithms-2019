@@ -1,10 +1,13 @@
 package lesson1
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import util.PerfResult
 import util.estimate
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
 import kotlin.math.abs
 import kotlin.system.measureNanoTime
@@ -45,6 +48,9 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        //Мои тесты
+        assertThrows(FileNotFoundException::class.java) { sortTimes("input/time_in4.txt", "temp.txt") }
+        assertThrows(IOException::class.java) { sortTimes("input/time_in5.txt", "temp.txt") }
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
@@ -73,6 +79,7 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+
     }
 
     private fun generateTemperatures(size: Int): PerfResult<Unit> {
@@ -118,6 +125,9 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        //Мои тесты
+        assertThrows(FileNotFoundException::class.java) { sortTimes("input/temp_in3.txt", "temp.txt") }
+
 
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {

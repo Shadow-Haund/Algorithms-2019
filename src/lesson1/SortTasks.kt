@@ -4,6 +4,7 @@ package lesson1
 
 import java.io.File
 import java.io.IOException
+import lesson1.Sorts.*
 
 /**
  * Сортировка времён
@@ -39,8 +40,7 @@ import java.io.IOException
 //Память O(n)
 fun timeStrToSeconds(str: String): Int {
     val parts = str.split(":")
-    var result = 0
-    result = if ("AM" in str)
+    return if ("AM" in str)
         if ("12" == str.substring(0..1))
             parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
         else
@@ -50,7 +50,6 @@ fun timeStrToSeconds(str: String): Int {
             parts[0].toInt() * 3600 + parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
         else
             parts[0].toInt() * 3600 + 12 * 3600 + parts[1].toInt() * 60 + parts[2].removeRange(2..4).toInt()
-    return result
 }
 
 fun sortTimes(inputName: String, outputName: String) {
@@ -164,7 +163,7 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  */
-//Сложность алгоритма O(n)
+//Сложность алгоритма O(n * log(n))
 //Память O(n)
 fun sortTemperatures(inputName: String, outputName: String) {
     val readFile = File(inputName).bufferedReader().readLines().toMutableList()
@@ -224,20 +223,52 @@ val readFile = File(inputName).bufferedReader().readLines().toMutableList()
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-TODO()
+    TODO()
 }
-//    val readText = File(inputName).readBytes().toMutableList()
-//    val writeText = File(outputName).bufferedWriter()
-//    val sortBites = readText.sorted()
-//    var maxInner = Pair(0, 0)
-//    val ch = 0
-//    var globalMaxInner = 0
-//    for (i in sortBites.indices)
-//        maxInner = (Pair(i, 0))
+/*
+ val readText = File(inputName).readBytes().toMutableList()
+    val writeText = File(outputName).bufferedWriter()
+    val sortBites = readText.sortedDescending()
+    var currentIn = 1
+    val maxInPair = mutableMapOf<Int, Int>()
+    var curentNum = -1
+    var globalMaxInner = 0
+    for (i in sortBites.indices) {
+        if (currentIn > globalMaxInner)
+            globalMaxInner = curentNum
+        if (curentNum != sortBites[i].toInt()) {
+            curentNum = sortBites[i].toInt()
+            maxInPair + (sortBites[i].toInt() to currentIn)
+        } else currentIn++
+    }
+
+    for (i in readText.indices)
+        writeText.write(readText[i].toInt())
+    writeText.close()
 
 
+ val writeText = File(outputName).bufferedWriter()
+    val sortBites = readText.sortedDescending()
+    var currentIn = 1
+    val maxInPair = mutableMapOf<Int, Int>()
+    var curentNum = -1
+    var globalMaxInner = 0
+    for (i in sortBites.indices) {
+        if (currentIn > globalMaxInner)
+            globalMaxInner = curentNum
+        if (curentNum != sortBites[i].toInt()) {
+            curentNum = sortBites[i].toInt()
+            maxInPair + (sortBites[i].toInt() to currentIn)         спросить, почему map не увеличивается
+        } else currentIn++
 
-//    writeText.close()
+
+for (i in sortBites.indices) {
+        if (sortBites[i].toInt() != curentNum) {
+            if (globalMaxInner < currentIn)
+                maxInPair = (Pair(sortBites[i].toInt(), globalMaxInner))
+        } else
+    }
+*/
 /**
  * Соединить два отсортированных массива в один
  *
