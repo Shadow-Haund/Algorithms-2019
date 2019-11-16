@@ -1,18 +1,19 @@
 package lesson3
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.NoSuchElementException
 import kotlin.math.max
 
 // Attention: comparable supported but comparator is not
-class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSortedSet<T> {
+open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSortedSet<T> {
 
     private var root: Node<T>? = null
 
     override var size = 0
-        private set
 
-    private class Node<T>(val value: T) {
+    private class Node<T>(var value: T) {
 
         var left: Node<T>? = null
 
@@ -63,8 +64,20 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+
+        if (find(element) == null || root == null) return false
+
+        removeNode(root, element)
+        size--
+
+        return true
     }
+
+    private fun removeNode(node: Node<T>?, value: T): Node<T>? {
+        //TODO
+        throw NotImplementedException()
+    }
+
 
     override operator fun contains(element: T): Boolean {
         val closest = find(element)
@@ -84,22 +97,44 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
     }
 
     inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
+
+        private var currentNode: Node<T>? = null
+        private val stack = ArrayDeque<Node<T>>()
+
+        init {
+            if (root != null) fillingStack(root!!)
+        }
+
+
+        private fun fillingStack(node: Node<T>) {
+            if (node == null) throw NoSuchElementException()
+            if (node.left != null) fillingStack(node.left!!)
+            stack.add(node)
+            if (node.right != null) fillingStack(node.right!!)
+        }
+
         /**
          * Проверка наличия следующего элемента
          * Средняя
+         *
          */
+
+//      Сложность алгоритма O(log n) где n - число элементов в дереве
+//      Память O(1)
         override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
+            return stack.peek() != null
         }
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
+//      Сложность алгоритма O(log n) где n - число элементов в дереве
+//      Память O(1)
+
         override fun next(): T {
-            // TODO
-            throw NotImplementedError()
+            currentNode = stack.pop()
+            return currentNode!!.value
         }
 
         /**
@@ -116,28 +151,74 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
 
     override fun comparator(): Comparator<in T>? = null
 
+    inner class SubTree<T : Comparable<T>>(
+        private val tree: KtBinaryTree<T>,
+        private val from: T?,
+        private val to: T?
+    ) : KtBinaryTree<T>() {
+
+        override fun add(element: T): Boolean {
+            if (!inRange(element)) throw IllegalArgumentException()
+            else return tree.add(element)
+        }
+
+        override fun contains(element: T): Boolean {
+            return inRange(element) && tree.contains(element)
+        }
+
+        override var size = 0
+            get() = size(tree)
+
+        private fun findSize(node: Node<T>?): Int {
+            var size = 0
+            if (node == null) return size
+            for (i in tree)
+                if (inRange(node.value)) size++
+            if (inRange(node.left!!.value)) size++
+            if (inRange(node.right!!.value)) size
+            return size
+        }
+
+        fun size(tree: KtBinaryTree<T>): Int {
+            var size = 0
+            for (value in tree) {
+                if (inRange(value)) size++
+            }
+            return size
+        }
+
+        private fun inRange(element: T): Boolean =
+            ((from == null || element >= from) && (to == null || element < to))
+    }
+
     /**
      * Найти множество всех элементов в диапазоне [fromElement, toElement)
      * Очень сложная
      */
+//      Сложность алгоритма O(n) где n - элементы главного дерева
+//      Память O(n) где n - элементы под дерева дерева
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
-        TODO()
+        return SubTree(this, fromElement, toElement)
     }
 
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
      */
+//      Сложность алгоритма O(n) где n - элементы главного дерева
+//      Память O(n) где n - элементы под дерева дерева
     override fun headSet(toElement: T): SortedSet<T> {
-        TODO()
+        return SubTree(this, null, toElement)
     }
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
      */
+//      Сложность алгоритма O(n) где n - элементы главного дерева
+//      Память O(n) где n - элементы под дерева дерева
     override fun tailSet(fromElement: T): SortedSet<T> {
-        TODO()
+        return SubTree(this, fromElement, null)
     }
 
     override fun first(): T {
