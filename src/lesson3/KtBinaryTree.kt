@@ -195,7 +195,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
      * Найти множество всех элементов в диапазоне [fromElement, toElement)
      * Очень сложная
      */
-//      Сложность алгоритма O(n) где n - элементы главного дерева
+//      Сложность алгоритма O(1) где n - элементы главного дерева
 //      Память O(n) где n - элементы под дерева дерева
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
         return SubTree(this, fromElement, toElement)
