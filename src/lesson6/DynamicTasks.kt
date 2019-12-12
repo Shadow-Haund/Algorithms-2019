@@ -2,6 +2,12 @@
 
 package lesson6
 
+import java.io.File
+import java.util.ArrayList
+import kotlin.math.max
+import kotlin.math.min
+
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -14,9 +20,52 @@ package lesson6
  * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
  * При сравнении подстрок, регистр символов *имеет* значение.
  */
+// Алгоритм: O(n*m) где m - длина первой строки длина, n - длина второй строки
+// Память: O(n*m) где m - длина первой строки длина, n - длина второй строки
 fun longestCommonSubSequence(first: String, second: String): String {
-    TODO()
+    val listChar = mutableListOf<Char>()
+    val matrix = List(first.length + 1) { IntArray(second.length + 1) }
+    var i = first.length - 1
+    var j = second.length - 1
+    for (i in first.indices) {
+        for (j in second.indices) {
+            if (first[i] == second[j]) {
+                matrix[i + 1][j + 1] = 1 + matrix[i][j]
+            } else {
+                matrix[i + 1][j + 1] = max(matrix[i + 1][j], matrix[i][j + 1])
+            }
+        }
+    }
+    while (i >= 0 && j >= 0) {
+        when {
+            first[i] == second[j] -> {
+                listChar.add(0, first[i])
+                i--
+                j--
+            }
+            matrix[i + 1][j] > matrix[i][j + 1] -> j--
+            else -> i--
+        }
+    }
+    return listChar.joinToString("")
 }
+
+/* другой вариант матицы
+val fir = " $first"
+    val sec = " $second"
+    val list = List(fir.length) { CharArray(sec.length) }
+    for (i in fir.indices) {
+        for (j in sec.indices) {
+            if (i == 0 && j == 0 || i != 0 && j != 0)
+                list[i][j] = '0'
+            if (i == 0 && j != 0)
+                list[i][j] = sec[j]
+            if (i != 0 && j == 0)
+                list[i][j] = fir[i]
+
+        }
+    }
+ */
 
 /**
  * Наибольшая возрастающая подпоследовательность
@@ -33,7 +82,6 @@ fun longestCommonSubSequence(first: String, second: String): String {
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
     TODO()
 }
-
 /**
  * Самый короткий маршрут на прямоугольном поле.
  * Средняя
@@ -54,9 +102,25 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
  *
  * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
  */
+// Алгоритм: O(n*m) где m - кол-во строк, n - кол-во столбцов
+// Память: O(n*m) где m - кол-во строк, n - кол-во столбцов
 fun shortestPathOnField(inputName: String): Int {
-    TODO()
-}
+    val readF = File(inputName).bufferedReader().readLines()
+    val list = List(readF.size) { IntArray(readF[0].length) }
+    list[0][0] = readF[0][0].toString().toInt()
+    for (j in 2..readF[0].length)
+        if (readF[0][j - 1].toString().equals(" "))
+            list[0][j] = readF[0][j].toString().toInt() + list[0][j - 2].toString().toInt()
+    for (i in 1 until readF.size)
+        list[i][0] = readF[i][0].toString().toInt() + list[i - 1][0].toString().toInt()
+    for (i in 1 until readF.size)
+        for (j in 2..readF[0].length)
+            if (readF[i - 1][j - 1].toString().equals(" ")) {
 
-// Задачу "Максимальное независимое множество вершин в графе без циклов"
-// смотрите в уроке 5
+                list[i][j] = readF[i][j].toString().toInt() + min(
+                    min(list[i][j - 2].toString().toInt(), list[i - 1][j].toString().toInt()),
+                    min(list[i][j - 2].toString().toInt(), list[i - 1][j - 2].toString().toInt())
+                )
+            }
+    return list[list.lastIndex][list[list.lastIndex].lastIndex]
+}
